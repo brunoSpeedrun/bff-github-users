@@ -1,0 +1,33 @@
+version: '3.7'
+
+services: 
+    bff-github-users:
+        image: bff-github-users:dev
+        container_name: bff-github-users
+        build: .docker/development
+        volumes: 
+            - .:/api
+        ports: 
+            - 3001:3000
+        networks: 
+            - backend
+        depends_on: 
+            - db
+    
+    db:
+        image: mongo
+        container_name: bff-github-users-db
+        restart: always
+        volumes:
+            - bff-github-users-db:/data/db
+        ports:
+            - '27018:27017'
+        networks:
+            - backend
+
+volumes:
+    bff-github-users-db:
+    
+networks:
+    backend:
+        driver: bridge
