@@ -1,27 +1,24 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseConfigService } from './config/mongose-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
-      imports:[ConfigModule],
-      useFactory: () =>{
-        const host = process.env.DB_HOST;
-        const port = process.env.DB_PORT;
-        const name = process.env.DB_NAME;
-
-        const uri =`mongodb://${host}:${port}`;
-
-        console.log('uri: ', uri);
-        return { uri, useNewUrlParser:true , dbName: name };
-      }
-
+      imports: [ConfigModule],
+      useFactory: () => {
+        const { DB_HOST, DB_PORT, DB_NAME } = process.env;
+        const uri = `mongodb://${DB_HOST}:${DB_PORT}`;
+        return {
+          uri,
+          dbName: DB_NAME,
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          useFindAndModify: false,
+        };
+      },
     }),
-
   ],
-  providers:[MongooseConfigService]
 })
 export class AppModule {}
