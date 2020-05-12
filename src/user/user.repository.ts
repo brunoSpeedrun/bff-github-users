@@ -5,5 +5,5 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel('User') private UserModel: Model<User>) {}
+  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 }
