@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { GithubModule } from './github/github.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { GithubModule } from './github/github.module';
       },
     }),
     GithubModule,
+    UserModule,
   ],
 })
 export class AppModule {}
