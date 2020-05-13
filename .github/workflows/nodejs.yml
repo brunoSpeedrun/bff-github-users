@@ -4,13 +4,10 @@
 name: Node.js CI
 
 on:
-  pull_request:
-    branches: [ develop ]
-    paths:
-      - src/*
-      - test/*
-      - '*.json'
-      - yarn.lock
+  push:
+    branches:
+      - develop
+
 jobs:
   build:
     name: build
