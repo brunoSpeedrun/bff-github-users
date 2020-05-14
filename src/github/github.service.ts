@@ -15,12 +15,12 @@ export class GithubService {
         const campos = {
           login: result.login,
           id: result.id,
-          nomdeid: result.node_id,
+          node_id: result.node_id,
           name: result.name,
-          htmlurl: result.html_url,
-          reposurl: result.repos_url,
-          updatedat: result.updated_at,
-          createdat: result.created_at,
+          html_url: result.html_url,
+          repos_url: result.repos_url,
+          updated_at: result.updated_at,
+          created_at: result.created_at,
           email: result.email,
         };
 

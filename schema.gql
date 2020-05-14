@@ -1,0 +1,19 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserType {
+  login: String!
+  id: String!
+  node_id: String
+  name: String!
+  html_url: String
+  repos_url: String
+  updated_at: String
+  created_at: String
+  email: String
+}
+
+type Query {
+  userByUsername(username: String!): UserType!
+}
