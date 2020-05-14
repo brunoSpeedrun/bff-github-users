@@ -5,7 +5,7 @@ import { GithubService } from '../github/github.service';
 export class UserService {
   constructor(private githubService: GithubService) {}
 
-  findByUsername(username: string) {
+  async findByUsername(username: string) {
     return this.githubService.findByUsername(username);
   }
 }

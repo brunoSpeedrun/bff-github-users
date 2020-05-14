@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { GithubModule } from './github/github.module';
 import { UserModule } from './user/user.module';
+import { GraphQLModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
@@ -22,6 +23,9 @@ import { UserModule } from './user/user.module';
       },
     }),
     GithubModule,
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+    }),
     UserModule,
   ],
 })
