@@ -1,14 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { GithubService } from '../github/github.service';
-import { GithubModule } from '../github/github.module';
 import { User } from './interfaces/user.interface';
 import { UserRepository } from './user.repository';
-import { UserModule } from './user.module';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: UserRepository;
 
   const githubMock = [
     {
@@ -16,12 +13,27 @@ describe('UserService', () => {
       email: 'augusto.oliveira',
     },
   ];
-  const UserMock = [
+  const repoMock = [
     {
       login: 'Oliveira',
-      email: 'Oliveira@hotmail.com',
+      email: 'Oliveira.augusto',
     },
   ];
+  const repositoryServiceMock = {
+    mock2: [] = [...repoMock],
+
+    async create(repoMock: any) {
+      return Promise.resolve({ ...repoMock });
+    },
+
+    findByUserNameMongo(login: string): Promise<User> {
+      return new Promise(resolve => {
+        const repo = this.mock2.find(r => r.login === login);
+
+        return resolve(repo);
+      });
+    },
+  };
 
   const githuServicebMock = {
     mock: [] = [...githubMock],
@@ -29,49 +41,53 @@ describe('UserService', () => {
     findByUsername(login: string): Promise<User> {
       return new Promise(resolve => {
         const user = this.mock.find(t => t.login === login);
+
         return resolve(user);
-      });
-    },
-    verifcacao(login: string): Promise<User> {
-      return new Promise(resolve => {
-        const user = this.mock.find(t => t.login === login);
       });
     },
   };
 
   beforeAll(async () => {
     const testingModule = await Test.createTestingModule({
-      imports: [UserModule, GithubModule],
       providers: [UserService, GithubService, UserRepository],
     })
-      .overrideProvider(UserRepository)
-
+      .overrideProvider(GithubService)
       .useValue(githuServicebMock)
+      .overrideProvider(UserRepository)
+      .useValue(repositoryServiceMock)
       .compile();
 
     userService = testingModule.get(UserService);
-    userRepository = testingModule.get(UserRepository);
   });
 
   it('should be defined', () => {
     expect(userService).toBeDefined();
-    expect(userRepository).toBeDefined();
   });
 
+  it('should ', async () => {
+    const repo = {
+      login: 'Oliveira',
+      name: 'Oliveira.augusto',
+    };
+
+    const UserAdded = await userService.verificacao(repo.login);
+    expect(UserAdded).toBeDefined();
+    expect(UserAdded.login).toBe(repo.login);
+  });
   it('should find by login ', async () => {
     const login = 'Augusto';
-    const user = await userService.findByUserName(login);
+    const user = await userService.verificacao(login);
     expect(user).toBeDefined();
     expect(user.login).toBe('Augusto');
   });
-  it('should ', async () => {
-    const newRepository = {
-      login: 'Augusto',
-      name: 'Guto',
+  it('mongo = null e git === null', async () => {
+    const repo = {
+      login: '',
+      name: '',
     };
 
-    const UserAdded = await userService.verificação(newRepository.login);
-    expect(UserAdded).toBeDefined();
-    expect(UserAdded.login).toBe(newRepository.login);
+    const bRnull = await userService.verificacao(repo.login);
+
+    expect(bRnull).toBeUndefined();
   });
 });

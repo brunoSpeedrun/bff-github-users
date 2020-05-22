@@ -9,18 +9,14 @@ export class UserService {
     private userDB: UserRepository,
   ) {}
 
-  async findByUserName(username: string) {
-    return await this.githubService.findByUsername(username);
-  }
-
-  async verificação(username: string) {
+  async verificacao(username: string) {
     const mongo = await this.userDB.findByUserNameMongo(username);
 
     const git = await this.githubService.findByUsername(username);
 
     if (mongo != null) {
       return mongo;
-    } else if (mongo === null && git != null) {
+    } else if (mongo == null && git != null) {
       return await this.userDB.create(git);
     }
   }
