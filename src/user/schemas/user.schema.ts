@@ -3,11 +3,11 @@ import * as mongoose from 'mongoose';
 export const UserSchema = new mongoose.Schema({
   login: String,
   id: String,
-  nodeid: String,
+  node_id: String,
   name: String,
-  htmlurl: String,
-  reposurl: String,
-  updatedat: String,
-  createdat: String,
+  html_url: String,
+  repos_url: String,
+  updated_at: String,
+  created_at: String,
   email: String,
 });

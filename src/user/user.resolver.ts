@@ -8,7 +8,6 @@ export class UserResolver {
 
   @Query(() => UserType)
   async userByUsername(@Args('username') username: string) {
-    const user = await this.userService.findByUsername(username);
-    return user;
+    return this.userService.verificacao(username);
   }
 }
