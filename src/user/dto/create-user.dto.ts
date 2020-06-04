@@ -1,4 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { RepositoryType } from './create-repository.dto';
 
 @ObjectType()
 export class UserType {
@@ -20,4 +21,6 @@ export class UserType {
   readonly created_at: string;
   @Field({ nullable: true })
   readonly email: string;
+  @Field(() => [RepositoryType], { nullable: true })
+  readonly repository: [RepositoryType];
 }

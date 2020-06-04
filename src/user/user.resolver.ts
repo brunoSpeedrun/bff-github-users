@@ -1,13 +1,20 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { UserType } from './dto/create-user.dto';
+import { RepositoryType } from './dto/create-repository.dto';
 
-@Resolver('User')
+@Resolver(() => UserType)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => UserType)
-  async userByUsername(@Args('username') username: string) {
+  async getUser(@Args('username') username: string) {
     return this.userService.verificacao(username);
+  }
+
+  @ResolveField('repository', () => [RepositoryType])
+  async repo(@Parent() user: UserType) {
+    const { login } = user;
+    return this.userService.findRepo(login);
   }
 }
