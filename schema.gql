@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RepositoryType {
+  id: String
+  node_id: String
+  name: String
+  full_name: String
+  html_url: String
+}
+
 type UserType {
   login: String
   id: String
@@ -12,10 +20,9 @@ type UserType {
   updated_at: String
   created_at: String
   email: String
+  repository: [RepositoryType!]!
 }
 
 type Query {
-  userByUsername(username: String!): UserType!
-  User: UserType!
-  userByUsernameRepo(username: String!): UserType!
+  getUser(username: String!): UserType!
 }

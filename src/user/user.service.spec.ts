@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { GithubService } from '../github/github.service';
 import { User } from './interfaces/user.interface';
 import { UserRepository } from './user.repository';
+import { Repository } from './interfaces/repository.interface';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -13,6 +14,7 @@ describe('UserService', () => {
       email: 'augusto.oliveira',
     },
   ];
+
   const repoMock = [
     {
       login: 'Oliveira',
@@ -24,6 +26,16 @@ describe('UserService', () => {
 
     async create(repoMock: any) {
       return Promise.resolve({ ...repoMock });
+    },
+    async createRepo(repoMock: any) {
+      return Promise.resolve({ ...repoMock });
+    },
+    findByRepoMongo(login: string) {
+      return new Promise(resolve => {
+        const repo = this.mock2.find(r => r.login === login);
+
+        return resolve(repo);
+      });
     },
 
     findByUserNameMongo(login: string): Promise<User> {
@@ -43,6 +55,13 @@ describe('UserService', () => {
         const user = this.mock.find(t => t.login === login);
 
         return resolve(user);
+      });
+    },
+    searchingForRepository(login: string): Promise<Repository[]> {
+      return new Promise(resolve => {
+        const repos = this.mock.find(t => t.login === login);
+
+        return resolve(repos);
       });
     },
   };
@@ -80,14 +99,53 @@ describe('UserService', () => {
     expect(user).toBeDefined();
     expect(user.login).toBe('Augusto');
   });
-  it('mongo = null e git === null', async () => {
+  it('we should check on the mongo and git', async () => {
     const repo = {
-      login: '',
+      login: 'Oliveira',
       name: '',
     };
 
     const bRnull = await userService.verificacao(repo.login);
+    expect(bRnull).toBeDefined();
+    expect(bRnull.login).toBe(repo.login);
+  });
+  it('must check if it exists in the mongo', async () => {
+    jest
+      .spyOn(repositoryServiceMock, 'findByRepoMongo')
+      .mockImplementationOnce(() => {
+        const mongoRepo = [
+          {
+            id: 'Oliveira',
+            node_id: '',
+            name: 'Oliveira.com',
+            full_name: '',
+            html_url: '',
+          },
+        ];
+        return Promise.resolve(mongoRepo);
+      });
 
-    expect(bRnull).toBeUndefined();
+    const mongo = {
+      id: 'Oliveira',
+      name: 'Oliveira.com',
+    };
+
+    const repo = await userService.findRepo(mongo.id);
+    expect(repo[0].id).toBe(mongo.id);
+  });
+  it('check if the mongo returns an empty array and look in git ', async () => {
+    jest
+      .spyOn(repositoryServiceMock, 'findByRepoMongo')
+      .mockImplementationOnce(() => {
+        const mongoRepo = [];
+        return Promise.resolve(mongoRepo);
+      });
+
+    const git = {
+      login: 'Augusto',
+      email: 'augusto.oliveira',
+    };
+    const repo = await userService.findRepo(git.login);
+    expect(repo).toStrictEqual(git);
   });
 });

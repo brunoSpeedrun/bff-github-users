@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-
 import { GithubService } from './github.service';
 import { AxiosResponse } from 'axios';
 import { HttpModule, HttpService } from '@nestjs/common';
@@ -51,5 +50,36 @@ describe('GithubService', () => {
     const user = await githubService.findByUsername('test');
 
     expect(user.login).toBe('test');
+  });
+  it('must search the users repository on github', async () => {
+    jest.spyOn(httpServiceMock, 'get').mockImplementationOnce(url => {
+      const response = {
+        data: [
+          {
+            id: '',
+            nomdeid: '',
+            name: '',
+            htmlurl: '',
+            fullname: '',
+            owner: {
+              login: 'test',
+            },
+          },
+        ],
+
+        headers: {},
+        config: { url: url },
+        status: 200,
+        statusText: 'OK',
+      };
+      return of(response);
+    });
+
+    const result = {
+      login: 'test',
+      name: '',
+    };
+    const repo = await githubService.searchingForRepository(result.login);
+    expect(repo).toBeInstanceOf(Array);
   });
 });

@@ -27,4 +27,21 @@ export class GithubService {
         return campos;
       });
   }
+  searchingForRepository(username: string) {
+    const uri = process.env.GITHUB_API;
+    const url = `${uri}/users/${username}/repos`;
+    return this.httpService
+      .get(url)
+      .toPromise()
+      .then(res => {
+        const result = res.data;
+        return result.map(
+          ({ id, node_id, name, full_name, html_url, owner: { login } }) => {
+            const row = { id, node_id, name, full_name, html_url, login };
+
+            return { ...row };
+          },
+        );
+      });
+  }
 }
