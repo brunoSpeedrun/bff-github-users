@@ -6,26 +6,25 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(
     private githubService: GithubService,
-    private userDB: UserRepository,
-    private repositorioDB: UserRepository,
+    private repositoryDB: UserRepository,
   ) {}
 
   async verificacao(username: string) {
-    const mongo = await this.userDB.findByUserNameMongo(username);
+    const mongo = await this.repositoryDB.findByUserNameMongo(username);
 
     if (mongo != null) {
       return mongo;
     }
     const git = await this.githubService.findByUsername(username);
-    return await this.userDB.create(git);
+    return await this.repositoryDB.create(git);
   }
   async findRepo(login: string) {
-    const mongo = await this.repositorioDB.findByRepoMongo(login);
+    const mongo = await this.repositoryDB.findByRepoMongo(login);
 
     if (mongo.length > 0) {
       return mongo;
     }
     const git = await this.githubService.searchingForRepository(login);
-    return await this.repositorioDB.createRepo(git);
+    return await this.repositoryDB.createRepo(git);
   }
 }
